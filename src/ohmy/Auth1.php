@@ -8,8 +8,7 @@
 
 use ohmy\Auth1\Flow\TwoLegged,
     ohmy\Auth1\Flow\ThreeLegged,
-    ohmy\Components\Http\Curl\Request,
-    ohmy\Components\Session\PHPSession;
+    ohmy\Components\Http\Curl\Request;
 
 class Auth1 {
 
@@ -22,6 +21,7 @@ class Auth1 {
         $client = new Request;
         $oauth = array(
             'oauth_callback'           => '',
+            'oauth_token_secret'       => '',
             'oauth_consumer_key'       => '',
             'oauth_consumer_secret'    => '',
             'oauth_nonce'              => md5(mt_rand()),
@@ -42,11 +42,9 @@ class Auth1 {
                 }, $client);
                 break;
             case 3:
-                $session = new PHPSession;
-                $oauth['oauth_token_secret'] = $session->read('oauth_token_secret');
                 return new ThreeLegged(function($resolve) use($oauth) {
                     $resolve($oauth);
-                }, $client, $session);
+                }, $client);
                 break;
             default:
         }
